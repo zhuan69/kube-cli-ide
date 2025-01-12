@@ -8,27 +8,27 @@ use crate::utils;
 #[derive(Deserialize, PartialEq, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct KubeListData {
-    api_version: String,
-    kind: String,
-    metadata: HashMap<String, String>,
-    items: Vec<KubeApiData>,
+    pub api_version: String,
+    pub kind: String,
+    pub metadata: HashMap<String, Value>,
+    pub items: Vec<KubeApiData>,
 }
 
 #[derive(Deserialize, PartialEq, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct KubeApiData {
-    api_version: String,
-    kind: String,
-    metadata: KubeMetaData,
-    spec: HashMap<String, Value>,
-    status: HashMap<String, String>,
+    pub api_version: String,
+    pub kind: String,
+    pub metadata: KubeMetaData,
+    pub spec: HashMap<String, Value>,
+    pub status: HashMap<String, Value>,
 }
 
 #[derive(Deserialize, PartialEq, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct KubeMetaData {
-    name: String,
-    labels: HashMap<String, String>,
+    pub name: String,
+    pub labels: HashMap<String, Value>,
 }
 
 impl KubeListData {

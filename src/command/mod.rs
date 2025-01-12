@@ -44,8 +44,11 @@ impl CommandMode {
                     String::new(),
                 );
                 let kube_output = kube_command.exec_command();
-                let kube_list_data =
-                    KubeListData::new_list_api_data_from_string(kube_output.as_str());
+                if let Some(kube_list_data) =
+                    KubeListData::new_list_api_data_from_string(kube_output.as_str())
+                {
+                    self.output_namespace_lists(&kube_list_data);
+                }
             }
             KubeCommandMode::ListMode => {
                 println!("get pod list");
@@ -65,6 +68,26 @@ impl CommandMode {
                 }
             }
         }
+    }
+
+    fn output_namespace_lists(&self, data: &KubeListData) {
+        let mut no_contents: Vec<String> = Vec::with_capacity(data.items.len());
+        let mut name_contents: Vec<String> = Vec::with_capacity(data.items.len());
+        let mut status_contents: Vec<String> = Vec::with_capacity(data.items.len());
+
+        for (idx, val) in data.items.iter().enumerate() {
+            no_contents.push(idx.to_string());
+            name_contents.push(val.metadata.name.clone());
+            if let Some(status) = val.status.get(&"phase".to_string()) {
+                status_contents.push(status.to_string());
+            }
+        }
+        let contents: HashMap<String, Vec<String>> = HashMap::from([
+            ("No".to_string(), no_contents),
+            ("Name".to_string(), name_contents),
+            ("Status".to_string(), status_contents),
+        ]);
+        RenderContentData::new_render_content(150, 10, contents).render_content();
     }
 
     pub fn default_output_config_file_kube(&self) -> KubeStateData {
